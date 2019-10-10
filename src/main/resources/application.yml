@@ -1,0 +1,12 @@
+server:
+  port: 8080
+aliyun:
+  ocr:
+    idcard:
+      host: https://dm-51.data.aliyun.com
+      api: /rest/160601/ocr/ocr_idcard.json
+      appcode: fddf14c4e0444041a0ff959642824627
+    passport:
+      host: https://ocrhz.market.alicloudapi.com
+      api: /rest/160601/ocr/ocr_passport.json
+      appcode: fddf14c4e0444041a0ff959642824627

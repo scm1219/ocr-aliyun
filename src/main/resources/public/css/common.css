@@ -1,0 +1,36 @@
+button{
+     cursor:pointer;
+     pointer-events:none;
+}
+
+    *{
+        padding: 0;
+        margin: 0;
+    }
+    .wrapper{
+        width: 320px;
+        height: 50px;
+        margin: 20px auto;
+        position: relative;
+        border: 1px solid #f0f0f0;
+    }
+    input{
+        width: 100px;
+        height: 30px;
+    }
+    button{
+        position: absolute;
+        cursor: pointer;
+        pointer-events: none;
+        width: 100px;
+        height: 30px;
+        left: 0;
+        top: 0;
+    }
+    a{
+        pointer-events: none;
+    }
+    .img{
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
