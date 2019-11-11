@@ -2,16 +2,13 @@ package com.github.scm1219.ocr;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -22,15 +19,22 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.TrustStrategy;
 
+/**
+ * 从阿里云文档中复制出的工具类
+ * 
+ * @author shaochangming
+ *
+ */
 public class HttpUtils {
 
 	/**
@@ -258,40 +262,20 @@ public class HttpUtils {
 		return sbUrl.toString();
 	}
 
-	private static HttpClient wrapClient(String host) {
-		HttpClient httpClient = new DefaultHttpClient();
+	private static HttpClient wrapClient(String host) throws Exception {
+		HttpClient httpClient = HttpClientBuilder.create().build();
 		if (host.startsWith("https://")) {
-			sslClient(httpClient);
+			SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+				// 信任所有
+				public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+					return true;
+				}
+			}).build();
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, new String[] { "TLSv1.2" },
+					null, NoopHostnameVerifier.INSTANCE);
+			return HttpClients.custom().setSSLSocketFactory(sslsf).build();
 		}
 		return httpClient;
 	}
 
-	private static void sslClient(HttpClient httpClient) {
-		try {
-			SSLContext ctx = SSLContext.getInstance("TLS");
-			X509TrustManager tm = new X509TrustManager() {
-				public X509Certificate[] getAcceptedIssuers() {
-					return null;
-				}
-
-				public void checkClientTrusted(X509Certificate[] xcs, String str) {
-
-				}
-
-				public void checkServerTrusted(X509Certificate[] xcs, String str) {
-
-				}
-			};
-			ctx.init(null, new TrustManager[] { tm }, null);
-			SSLSocketFactory ssf = new SSLSocketFactory(ctx);
-			ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-			ClientConnectionManager ccm = httpClient.getConnectionManager();
-			SchemeRegistry registry = ccm.getSchemeRegistry();
-			registry.register(new Scheme("https", 443, ssf));
-		} catch (KeyManagementException ex) {
-			throw new RuntimeException(ex);
-		} catch (NoSuchAlgorithmException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
 }
