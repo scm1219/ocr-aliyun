@@ -1,0 +1,32 @@
+{"properties": [
+{
+	"name": "aliyun.ocr.idcard.host",
+	"type": "java.lang.String",
+	"description": "身份证识别接口地址"
+},
+{
+	"name": "aliyun.ocr.idcard.api",
+	"type": "java.lang.String",
+	"description": "身份证识别接口路径"
+},
+{
+	"name": "aliyun.ocr.idcard.appcode",
+	"type": "java.lang.String",
+	"description": "调用接口的AppCode"
+},
+{
+	"name": "aliyun.ocr.passport.host",
+	"type": "java.lang.String",
+	"description": "护照识别接口地址"
+},
+{
+	"name": "aliyun.ocr.passport.api",
+	"type": "java.lang.String",
+	"description": "护照识别接口路径"
+},
+{
+	"name": "aliyun.ocr.passport.appcode",
+	"type": "java.lang.String",
+	"description": "护照调用接口的AppCode"
+}
+]}
